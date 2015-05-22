@@ -1,0 +1,22 @@
+{
+  "name": "web_scraper",
+  "version": "1.0.0",
+  "description": "Fetches Mexico's data from different data sources",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mexico"
+  ],
+  "author": "me@carlosiriarte.com",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "gulp": "^3.8.11",
+    "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-sourcemaps": "^1.5.2",
+    "request": "^2.55.0"
+  }
+}
