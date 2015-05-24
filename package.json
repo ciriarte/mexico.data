@@ -2,9 +2,10 @@
   "name": "web_scraper",
   "version": "1.0.0",
   "description": "Fetches Mexico's data from different data sources",
-  "main": "index.js",
+  "main": "dist/all.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers js:babel/register",
+    "lint": "eslint src"
   },
   "keywords": [
     "mexico"
@@ -13,10 +14,19 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "^0.19.0",
+    "es6-module-loader": "^0.16.6",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
     "gulp-concat": "^2.5.2",
     "gulp-sourcemaps": "^1.5.2",
     "request": "^2.55.0"
+  },
+  "devDependencies": {
+    "babel": "^5.4.7",
+    "babel-core": "^5.4.7",
+    "babel-eslint": "^3.1.8",
+    "eslint": "^0.21.2",
+    "gulp-eslint": "^0.12.0",
+    "gulp-mocha": "^2.1.0"
   }
 }
