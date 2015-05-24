@@ -8,12 +8,16 @@ let url     = 'https://en.wikipedia.org/wiki/List_of_heads_of_state_of_Mexico',
     data    = [];
 
 function extractHeadOfState(el, $) {
-  let text = $(el).text();
+  let text = $(el).text()
+                  .replace(/^\n|\n$/gm, '');
 
-  function tryParse(exp, str) {
+  function tryParse(exp, str, idx) {
+    idx = idx || 0;
     try {
-      console.log(str);
-      return exp.exec(str)[0];
+      let result = exp.exec(str);
+      if (result) {
+        return result[idx];
+      }
     }
     catch (err) {
       console.log(err);
@@ -26,8 +30,8 @@ function extractHeadOfState(el, $) {
           'name': tryParse(/\D+$/m, text),
           'dob': tryParse(/(\d{4})/m, text),
           'dod': tryParse(/(\d{4})\)/, text),
-          'took_office': text,
-          'left_office': text,
+          'took_office': tryParse(/([a-z]+\s\d+,\s\d{4})\n([a-z]+\s\d+,\s\d{4}|Incumbent)/mi, text, 1),
+          'left_office': tryParse(/[a-z]+\s\d+,\s\d{4}\n([a-z]+\s\d+,\s\d{4})$/mi, text, 1),
           'party': text
       };
       data.push(row);
@@ -42,7 +46,7 @@ request(url, function(error, response, html){
     if(!error) {
         let $ = cheerio.load(html);
 
-    $('.wikitable').each(function() {
+    $('.wikitable:not(:last-of-type)').each(function() {
       $(this)
        .find('tr:not(:first-child)')
        .each(function() { extractHeadOfState(this, $); });
