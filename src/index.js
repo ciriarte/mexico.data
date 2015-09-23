@@ -1,6 +1,6 @@
 'use strict';
 
-import * as fs from 'fs';
+import pg from 'pg';
 import * as cheerio from 'cheerio';
 
 let url     = 'https://en.wikipedia.org/wiki/List_of_heads_of_state_of_Mexico',
@@ -48,17 +48,28 @@ request(url, function(error, response, html){
     if(!error) {
         let $ = cheerio.load(html);
 
-    $('.wikitable:not(:last-of-type)').each(function() {
-      $(this)
-       .find('tr:not(:first-child)')
-       .each(function() { extractHeadOfState(this, $); });
-    });
+      $('.wikitable:not(:last-of-type)').each(function() {
+        $(this)
+         .find('tr:not(:first-child)')
+         .each(function() { extractHeadOfState(this, $); });
+      });
 
+      let connectionString = 'postgres://postgres:5432@localhost/postgres',
+                    client = new pg.Client(connectionString);
 
-    fs.writeFile('presidents.json', JSON.stringify(data, null, 4), function(err){
-        if (!err) {
-          console.log('File successfully written! - Check your project directory for the presidents.json file');
-        }
+      client.connect(function(err) {
+      if(err) {
+        return console.error('could not connect to postgres', err);
+      }
+      data.each(function() {
+        client.query('SELECT NOW() AS "theTime"', function(qErr, result) {
+          if(qErr) {
+            return console.error('error running query', qErr);
+          }
+          console.log(result.rows[0].theTime);
+          client.end();
+        });
+      });
     });
     }
 });

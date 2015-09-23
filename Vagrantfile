@@ -9,14 +9,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.update_guest_tools = true
   end
 
+  #config.ssh.username = 'root'
+  #config.ssh.password = 'vagrant'
+  #config.ssh.insert_key = 'true'
+
   config.vm.define :web do |web|
     # Centos 7.1
     web.vm.box = "vagrant-centos7.1"
 
     # Network
-    web.vm.hostname = "web.local"
+    web.vm.hostname = "web.dev"
     web.vm.network :forwarded_port, guest: 9000, host: 8080, auto_correct: true
-
+    web.vm.network :forwarded_port, guest: 5432, host: 15432
     # Share for masterless server
     web.vm.synced_folder "salt/roots/", "/srv/"
 
@@ -30,5 +34,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Run the highstate on start
       salt.run_highstate = true
     end
+  end
+
+  config.vm.provision :hostsupdate, run: 'always' do |host| 
+    host.hostname = 'web.dev'
+    host.manage_guest = true
+    host.manage_host  = true
   end
 end

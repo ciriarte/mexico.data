@@ -2,3 +2,4 @@ base:
   '*':
     - git
     - iojs
+    - postgres
